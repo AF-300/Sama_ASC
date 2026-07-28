@@ -11,13 +11,14 @@
     </div>
 
     <div x-show="!nouveauContributeur">
-        <select name="statut" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm">
-    @foreach (['paye' => 'Payé', 'en_attente' => 'En attente', 'en_retard' => 'En retard'] as $value => $label)
-        <option value="{{ $value }}" @selected(old('statut', $c->statut ?? 'en_attente') === $value)>
-            {{ $label }}
-        </option>
-    @endforeach
-</select>
+        <select name="contributeur_id" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm">
+            <option value="">-- Selectionner --</option>
+            @foreach ($contributeurs as $contributeur)
+                <option value="{{ $contributeur->id }}" @selected(old('contributeur_id', $c->contributeur_id ?? '') == $contributeur->id)>
+                    {{ $contributeur->prenom }} {{ $contributeur->nom }} ({{ $contributeur->quartier }})
+                </option>
+            @endforeach
+        </select>
         @error('contributeur_id') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
     </div>
 
