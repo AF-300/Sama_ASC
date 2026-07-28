@@ -44,13 +44,20 @@
         {{ __('Mes convocations') }}
     </x-nav-link>
 @endrole
-
-                    <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
-                        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        {{ __('Messages') }}
-                    </x-nav-link>
+<x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+    <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+    {{ __('Messages') }}
+    @php
+        $messagesNonLus = \App\Models\Message::where('destinataire_id', auth()->id())->where('lu', false)->count();
+    @endphp
+    @if ($messagesNonLus > 0)
+        <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+            {{ $messagesNonLus }}
+        </span>
+    @endif
+</x-nav-link>
 
                     <x-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
     <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,8 +231,13 @@
     </x-responsive-nav-link>
 @endrole
             <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
-                {{ __('Messages') }}
-            </x-responsive-nav-link>
+    {{ __('Messages') }}
+    @if ($messagesNonLus > 0)
+        <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+            {{ $messagesNonLus }}
+        </span>
+    @endif
+</x-responsive-nav-link>
 
             @role('admin_asc|coach')
                 <x-responsive-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
