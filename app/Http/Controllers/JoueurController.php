@@ -96,17 +96,19 @@ class JoueurController extends Controller
             ->with('success', 'Joueur supprimé avec succès.');
     }
 
-    private function compresserEtStockerPhoto($fichier): string
+   private function compresserEtStockerPhoto($fichier): string
 {
     $manager = new ImageManager(new Driver());
     $image = $manager->read($fichier);
 
-    // Redimensionne pour que la largeur ne depasse pas 500px, garde les proportions
     $image->scaleDown(width: 500);
+
+    // S'assure que le dossier de destination existe (important en production
+    // ou le dossier n'a pas encore ete cree par un upload precedent)
+    \Illuminate\Support\Facades\File::ensureDirectoryExists(storage_path('app/public/joueurs'));
 
     $nomFichier = 'joueurs/'.uniqid().'.jpg';
 
-    // Encode en JPEG avec 75% de qualite (bon compromis poids/qualite)
     $image->toJpeg(75)->save(storage_path('app/public/'.$nomFichier));
 
     return $nomFichier;
