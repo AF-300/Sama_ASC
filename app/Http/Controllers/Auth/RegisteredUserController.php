@@ -73,6 +73,8 @@ private function compresserEtStockerPhoto($fichier): string
     $image = $manager->read($fichier);
     $image->scaleDown(width: 500);
 
+    \Illuminate\Support\Facades\File::ensureDirectoryExists(storage_path('app/public/joueurs'));
+
     $nomFichier = 'joueurs/'.uniqid().'.jpg';
     $image->toJpeg(75)->save(storage_path('app/public/'.$nomFichier));
 
