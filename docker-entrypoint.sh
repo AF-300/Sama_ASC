@@ -2,8 +2,11 @@
 set -e
 
 # Lance les migrations automatiquement au demarrage
+# Lance les migrations automatiquement au demarrage
 php artisan migrate --force
 
+# Cree les roles et le compte admin (sans risque de doublon grace a firstOrCreate)
+php artisan db:seed --force
 # Cree le lien symbolique de stockage (photos joueurs, etc.)
 php artisan storage:link || true
 
