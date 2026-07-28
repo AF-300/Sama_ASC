@@ -65,7 +65,7 @@
 <div>
     <label class="block text-sm font-medium text-gray-700">Statut</label>
     <select name="statut" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm">
-        @foreach (['paye' => 'Paye', 'en_attente' => 'En attente', 'en_retard' => 'En retard'] as $value => $label)
+        @foreach (['paye' => 'Payé', 'en_attente' => 'En attente', 'en_retard' => 'En retard'] as $value => $label)
             <option value="{{ $value }}" @selected(old('statut', $c->statut ?? 'en_attente') === $value)>
                 {{ $label }}
             </option>
