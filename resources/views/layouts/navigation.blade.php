@@ -226,6 +226,15 @@
                 {{ __('Classement') }}
             </x-responsive-nav-link>
 
+             @role('joueur')
+    <x-nav-link :href="route('matchs.mes-convocations')" :active="request()->routeIs('matchs.mes-convocations')">
+        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {{ __('Mes convocations') }}
+    </x-nav-link>
+@endrole
+
             <x-responsive-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
     {{ __('Matchs') }}
 </x-responsive-nav-link>
