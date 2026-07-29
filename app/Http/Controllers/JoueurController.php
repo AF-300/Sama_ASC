@@ -100,17 +100,15 @@ class JoueurController extends Controller
 {
     $manager = new ImageManager(new Driver());
     $image = $manager->read($fichier);
-
     $image->scaleDown(width: 500);
 
-    // S'assure que le dossier de destination existe (important en production
-    // ou le dossier n'a pas encore ete cree par un upload precedent)
-    \Illuminate\Support\Facades\File::ensureDirectoryExists(storage_path('app/public/joueurs'));
+    // Encode en JPEG compresse en memoire (pas de sauvegarde locale)
+    $imageEncodee = (string) $image->toJpeg(75);
 
-    $nomFichier = 'joueurs/'.uniqid().'.jpg';
-
-    $image->toJpeg(75)->save(storage_path('app/public/'.$nomFichier));
-
-    return $nomFichier;
+    $resultat = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::uploadApi()->upload(
+    'data:image/jpeg;base64,'.base64_encode($imageEncodee),
+    ['folder' => 'sama-asc/joueurs']
+)['secure_url'];
+return $resultat;
 }
 }
