@@ -12,6 +12,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ContributeurController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UtilisateurController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -60,6 +61,8 @@ Route::middleware('auth')->group(function () {
         Route::get('caisse', [CaisseController::class, 'index'])->name('caisse.index');
         Route::resource('contributeurs', ContributeurController::class);
         Route::get('caisse/rapport-pdf', [CaisseController::class, 'exporterPdf'])->name('caisse.rapport-pdf');
+        Route::get('utilisateurs', [UtilisateurController::class, 'index'])->name('utilisateurs.index');
+Route::delete('utilisateurs/{user}', [UtilisateurController::class, 'destroy'])->name('utilisateurs.destroy');
     });
 });
 
