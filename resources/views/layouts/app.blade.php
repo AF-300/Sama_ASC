@@ -27,6 +27,31 @@
         });
     }
 </script>
+
+<script>
+    async function mettreAJourBadge() {
+        if (!('setAppBadge' in navigator)) return;
+
+        try {
+            const response = await fetch('{{ route('badge.count') }}');
+            const data = await response.json();
+
+            if (data.count > 0) {
+                navigator.setAppBadge(data.count);
+            } else {
+                navigator.clearAppBadge();
+            }
+        } catch (e) {
+            // Echec silencieux, pas grave si le badge ne se met pas a jour
+        }
+    }
+
+    // Verifie au chargement de la page
+    mettreAJourBadge();
+
+    // Puis toutes les 60 secondes tant que la page est ouverte
+    setInterval(mettreAJourBadge, 60000);
+</script>
     </head>
    <body class="font-sans antialiased bg-blanc-sable overflow-x-hidden">
         <div class="min-h-screen bg-gray-100">

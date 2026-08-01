@@ -52,6 +52,14 @@ Route::middleware('auth')->group(function () {
             return back();
         })->name('notifications.marquer-lues');
         Route::get('mes-convocations', [MatchController::class, 'mesConvocations'])->name('matchs.mes-convocations');
+
+        Route::get('badge-count', function () {
+    $user = auth()->user();
+    $nonLusNotifs = $user->unreadNotifications->count();
+    $nonLusMessages = \App\Models\Message::where('destinataire_id', $user->id)->where('lu', false)->count();
+
+    return response()->json(['count' => $nonLusNotifs + $nonLusMessages]);
+})->name('badge.count');
     });
 
     // Admin uniquement : finances
