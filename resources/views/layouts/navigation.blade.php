@@ -178,14 +178,23 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-blanc-sable/60 hover:text-blanc-sable hover:bg-white/5 focus:outline-none focus:bg-white/5 focus:text-blanc-sable transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <!-- Hamburger -->
+<div class="-me-2 flex items-center sm:hidden">
+    @php
+        $totalNonLus = Auth::user()->unreadNotifications->count() + $messagesNonLus;
+    @endphp
+    <button @click="open = ! open" class="relative inline-flex items-center justify-center p-2 rounded-md text-blanc-sable/60 hover:text-blanc-sable hover:bg-white/5 focus:outline-none focus:bg-white/5 focus:text-blanc-sable transition duration-150 ease-in-out">
+        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        @if ($totalNonLus > 0)
+            <span class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+                {{ $totalNonLus }}
+            </span>
+        @endif
+    </button>
+</div>
         </div>
     </div>
 
