@@ -7,7 +7,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm rounded-xl p-6 space-y-3" x-data="{ photoOuverte: false }">
     @if ($joueur->photo)
-        <img src="{{ Storage::url($joueur->photo) }}"
+        <img src="{{ $joueur->photo }}"
              @click="photoOuverte = true"
              class="w-24 h-24 rounded-full object-cover mb-4 cursor-pointer hover:opacity-80 transition">
 
@@ -17,7 +17,7 @@
              @keydown.escape.window="photoOuverte = false"
              class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
              style="display: none;">
-            <img src="{{ Storage::url($joueur->photo) }}"
+            <img src="{{ $joueur->photo }}"
                  @click.stop
                  class="max-w-full max-h-full rounded-lg shadow-2xl">
             <button @click="photoOuverte = false"

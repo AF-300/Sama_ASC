@@ -37,7 +37,7 @@
                             <tr>
                                 <td class="px-6 py-3">
                                     @if ($joueur->photo)
-                                        <img src="{{ Storage::url($joueur->photo) }}" class="w-10 h-10 rounded-full object-cover">
+                                        <img src="{{ $joueur->photo }}" class="w-10 h-10 rounded-full object-cover">
                                     @else
                                         <div class="w-10 h-10 rounded-full bg-or-sable flex items-center justify-center text-white font-display font-bold">
     {{ strtoupper(substr($joueur->prenom, 0, 1)) }}

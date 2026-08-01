@@ -69,15 +69,19 @@ class RegisteredUserController extends Controller
 
 private function compresserEtStockerPhoto($fichier): string
 {
-    $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+    $manager = new ImageManager(new Driver());
     $image = $manager->read($fichier);
     $image->scaleDown(width: 500);
 
-    \Illuminate\Support\Facades\File::ensureDirectoryExists(storage_path('app/public/joueurs'));
+    // Encode en JPEG compresse en memoire (pas de sauvegarde locale)
+    $imageEncodee = (string) $image->toJpeg(75);
 
-    $nomFichier = 'joueurs/'.uniqid().'.jpg';
-    $image->toJpeg(75)->save(storage_path('app/public/'.$nomFichier));
+   // Upload vers Cloudinary via la facade du package
+$resultat = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::upload(
+    'data:image/jpeg;base64,'.base64_encode($imageEncodee),
+    ['folder' => 'sama-asc/joueurs']
+)->getSecurePath();
 
-    return $nomFichier;
+return $resultat;
 }
 }

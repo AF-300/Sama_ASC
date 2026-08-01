@@ -70,6 +70,6 @@
            class="mt-1 block w-full text-sm text-gray-700">
     @error('photo') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
     @if ($j && $j->photo)
-        <img src="{{ Storage::url($j->photo) }}" class="mt-2 w-16 h-16 rounded-full object-cover">
+        <img src="{{ $j->photo }}" class="mt-2 w-16 h-16 rounded-full object-cover">
     @endif
 </div>
