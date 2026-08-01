@@ -14,6 +14,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+<meta name="theme-color" content="#14231C">
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js');
+        });
+    }
+</script>
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen flex">

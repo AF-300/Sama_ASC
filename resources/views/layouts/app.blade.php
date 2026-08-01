@@ -17,7 +17,16 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+<meta name="theme-color" content="#14231C">
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js');
+        });
+    }
+</script>
     </head>
    <body class="font-sans antialiased bg-blanc-sable overflow-x-hidden">
         <div class="min-h-screen bg-gray-100">

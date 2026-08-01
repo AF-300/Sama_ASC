@@ -1,0 +1,23 @@
+{
+    "name": "Sama ASC",
+    "short_name": "Sama ASC",
+    "description": "Gestion des Associations Sportives et Culturelles",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#FAF7F0",
+    "theme_color": "#14231C",
+    "icons": [
+        {
+            "src": "/logo_ASC.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/logo_ASC.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        }
+    ]
+}
