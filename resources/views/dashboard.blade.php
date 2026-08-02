@@ -53,6 +53,21 @@
             @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            @if (isset($cotisationsParMois))
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white shadow-sm rounded-xl p-6">
+            <h3 class="font-display font-semibold text-nuit-dakar mb-4">Cotisations (6 derniers mois)</h3>
+            <canvas id="graphiqueCotisations" height="200"></canvas>
+        </div>
+
+        <div class="bg-white shadow-sm rounded-xl p-6">
+            <h3 class="font-display font-semibold text-nuit-dakar mb-4">Depenses par categorie</h3>
+            <canvas id="graphiqueDepenses" height="200"></canvas>
+        </div>
+    </div>
+@endif
+
                 {{-- Prochains matchs --}}
                 <div class="bg-white shadow-sm rounded-xl p-6">
                     <h3 class="font-display font-semibold text-nuit-dakar mb-4">Prochains matchs</h3>
@@ -83,4 +98,41 @@
             </div>
         </div>
     </div>
+    @if (isset($cotisationsParMois))
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script>
+        const ctxCotisations = document.getElementById('graphiqueCotisations');
+        new Chart(ctxCotisations, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($cotisationsParMois->keys()) !!},
+                datasets: [{
+                    label: 'Cotisations (FCFA)',
+                    data: {!! json_encode($cotisationsParMois->values()) !!},
+                    backgroundColor: '#1B5E3C',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        const ctxDepenses = document.getElementById('graphiqueDepenses');
+        new Chart(ctxDepenses, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($depensesParCategorie->keys()) !!},
+                datasets: [{
+                    data: {!! json_encode($depensesParCategorie->values()) !!},
+                    backgroundColor: ['#1B5E3C', '#E3A83B', '#C1432B', '#6B7280'],
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    </script>
+@endif
 </x-app-layout>

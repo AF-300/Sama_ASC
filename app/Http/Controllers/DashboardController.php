@@ -35,6 +35,16 @@ class DashboardController extends Controller
             $data['totalDepenses'] = Depense::sum('montant');
             $data['solde'] = $data['totalCotisations'] - $data['totalDepenses'];
             $data['cotisationsEnRetard'] = Cotisation::where('statut', 'en_retard')->count();
+
+            $data['cotisationsParMois'] = Cotisation::where('statut', 'paye')
+                ->where('date_paiement', '>=', now()->subMonths(6))
+                ->get()
+                ->groupBy(fn ($c) => $c->date_paiement->format('Y-m'))
+                ->map(fn ($groupe) => $groupe->sum('montant'));
+
+            $data['depensesParCategorie'] = Depense::selectRaw('categorie, SUM(montant) as total')
+                ->groupBy('categorie')
+                ->pluck('total', 'categorie');
         }
 
         return view('dashboard', $data);
