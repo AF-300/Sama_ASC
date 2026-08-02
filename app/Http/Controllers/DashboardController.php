@@ -20,7 +20,7 @@ class DashboardController extends Controller
                 ->orderBy('date_match')
                 ->limit(3)
                 ->get(),
-            'dernieresAnnonces' => Annonce::orderByDesc('date_publication')->limit(3)->get(),
+           'dernieresAnnonces' => Annonce::orderByDesc('date_publication')->limit(8)->get(),
         ];
 
         if ($user->hasAnyRole(['admin_asc', 'coach'])) {

@@ -6,6 +6,23 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+        @if ($dernieresAnnonces->isNotEmpty())
+    <div class="bg-nuit-dakar rounded-xl overflow-hidden flex items-center">
+        <span class="bg-or-sable text-nuit-dakar font-display font-bold text-xs px-4 py-3 shrink-0 uppercase tracking-wide">
+            Annonces
+        </span>
+        <div class="overflow-hidden flex-1 py-3">
+            <div class="flex gap-12 whitespace-nowrap animate-marquee">
+               @foreach ($dernieresAnnonces->concat($dernieresAnnonces) as $annonce)
+    <a href="{{ route('annonces.show', $annonce) }}" class="text-blanc-sable text-sm hover:text-or-sable transition">
+        <span class="font-medium">{{ $annonce->titre }} :</span> {{ Str::limit($annonce->contenu, 80) }}
+    </a>
+@endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
             {{-- Cartes stats principales --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white shadow-sm rounded-xl p-6 border-l-4 border-vert-teranga">
@@ -84,8 +101,8 @@
 
                 {{-- Dernieres annonces --}}
                 <div class="bg-white shadow-sm rounded-xl p-6">
-                    <h3 class="font-display font-semibold text-nuit-dakar mb-4">Dernieres annonces</h3>
-                    @forelse ($dernieresAnnonces as $annonce)
+    <h3 class="font-display font-semibold text-nuit-dakar mb-4">Dernieres annonces</h3>
+    @forelse ($dernieresAnnonces->take(3) as $annonce)
                         <div class="py-2 border-b border-gray-100 last:border-0 text-sm">
                             <a href="{{ route('annonces.show', $annonce) }}" class="font-medium hover:underline">{{ $annonce->titre }}</a>
                             <p class="text-gray-500 text-xs font-mono">{{ $annonce->date_publication->format('d/m/Y') }}</p>
