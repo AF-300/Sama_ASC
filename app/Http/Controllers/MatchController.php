@@ -11,57 +11,9 @@ class MatchController extends Controller
 {
     public function index()
 {
-    $userId = Auth::id();
+    $matchs = MatchGame::orderByDesc('date_match')->paginate(15);
 
-    $contacts = User::where('id', '!=', $userId)->orderBy('name')->get();
-
-    $derniersMessages = Message::where('expediteur_id', $userId)
-        ->orWhere('destinataire_id', $userId)
-        ->orderByDesc('created_at')
-        ->get()
-        ->groupBy(function ($message) use ($userId) {
-            return $message->expediteur_id === $userId
-                ? $message->destinataire_id
-                : $message->expediteur_id;
-        })
-        ->map(fn ($messages) => $messages->first());
-
-    $nonLus = Message::where('destinataire_id', $userId)
-        ->where('lu', false)
-        ->get()
-        ->groupBy('expediteur_id')
-        ->map->count();
-
-    // Trie les contacts : d'abord ceux avec messages non lus,
-    // puis par date du dernier message (plus recent en premier),
-    // puis les contacts sans aucun message a la fin (par nom)
-    $contacts = $contacts->sort(function ($a, $b) use ($nonLus, $derniersMessages) {
-        $aNonLu = $nonLus->get($a->id, 0);
-        $bNonLu = $nonLus->get($b->id, 0);
-
-        // Priorite 1 : les non lus passent devant
-        if (($aNonLu > 0) !== ($bNonLu > 0)) {
-            return $bNonLu <=> $aNonLu;
-        }
-
-        $aDernier = $derniersMessages->get($a->id);
-        $bDernier = $derniersMessages->get($b->id);
-
-        // Priorite 2 : le message le plus recent en premier
-        if ($aDernier && $bDernier) {
-            return $bDernier->created_at <=> $aDernier->created_at;
-        }
-
-        // Les contacts avec au moins un message passent avant ceux sans aucun message
-        if ($aDernier || $bDernier) {
-            return $aDernier ? -1 : 1;
-        }
-
-        // Sinon, tri alphabetique par defaut
-        return strcmp($a->name, $b->name);
-    })->values();
-
-    return view('messages.index', compact('contacts', 'derniersMessages', 'nonLus'));
+    return view('matchs.index', compact('matchs'));
 }
 
     public function create()
@@ -76,7 +28,7 @@ class MatchController extends Controller
             'date_match' => 'required|date',
             'heure' => 'nullable',
             'lieu' => 'nullable|string|max:255',
-            'statut' => 'required|in:a_venir,joué,annulé',
+            'statut' => 'required|in:a_venir,joue,annule',
         ]);
 
         MatchGame::create($validated);
