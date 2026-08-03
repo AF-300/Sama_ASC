@@ -7,9 +7,17 @@
 }
 
 .animate-marquee {
-    animation: marquee 15s linear infinite;
+    animation: marquee 18s linear infinite;
+    will-change: transform;
 }
 
 .animate-marquee:hover {
     animation-play-state: paused;
+}
+
+/* Defilement plus rapide sur mobile pour compenser la sensation de lenteur */
+@media (max-width: 640px) {
+    .animate-marquee {
+        animation-duration: 12s;
+    }
 }
