@@ -54,15 +54,12 @@ class StatistiqueController extends Controller
      * Classement des buteurs (visible par tous les roles connectes).
      */
     public function classement()
-    {
-        $buteurs = Joueur::withSum('statistiques as total_buts', 'buts')
-            ->withSum('statistiques as total_passes', 'passes_decisives')
-            ->withCount('matchsJoues')
-            ->orderByDesc('total_buts')
-            ->get()
-            ->filter(fn ($j) => $j->total_buts > 0)
-            ->values();
+{
+    $prochainMatch = \App\Models\MatchGame::where('statut', 'a_venir')
+        ->orderBy('date_match')
+        ->with('compositions.joueur')
+        ->first();
 
-        return view('statistiques.classement', compact('buteurs'));
-    }
+    return view('statistiques.classement', compact('prochainMatch'));
+}
 }
