@@ -9,12 +9,22 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class JoueurController extends Controller
 {
-    public function index()
-    {
-        $joueurs = Joueur::orderBy('nom')->paginate(15);
+    public function index(Request $request)
+{
+    $joueurs = Joueur::query()
+        ->when($request->recherche, function ($query, $recherche) {
+            $query->where(function ($q) use ($recherche) {
+                $q->where('nom', 'like', "%{$recherche}%")
+                    ->orWhere('prenom', 'like', "%{$recherche}%")
+                    ->orWhere('quartier', 'like', "%{$recherche}%");
+            });
+        })
+        ->orderBy('nom')
+        ->paginate(15)
+        ->withQueryString();
 
-        return view('joueurs.index', compact('joueurs'));
-    }
+    return view('joueurs.index', compact('joueurs'));
+}
 
     public function create()
 {

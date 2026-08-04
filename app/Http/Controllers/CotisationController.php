@@ -8,12 +8,26 @@ use Illuminate\Http\Request;
 
 class CotisationController extends Controller
 {
-    public function index()
-    {
-        $cotisations = Cotisation::with('contributeur')->orderByDesc('created_at')->paginate(15);
+   public function index(Request $request)
+{
+    $cotisations = Cotisation::query()
+        ->with('contributeur')
+        ->when($request->recherche, function ($query, $recherche) {
+            $query->whereHas('contributeur', function ($q) use ($recherche) {
+                $q->where('nom', 'like', "%{$recherche}%")
+                    ->orWhere('prenom', 'like', "%{$recherche}%")
+                    ->orWhere('quartier', 'like', "%{$recherche}%");
+            });
+        })
+        ->when($request->statut, function ($query, $statut) {
+            $query->where('statut', $statut);
+        })
+        ->orderByDesc('created_at')
+        ->paginate(15)
+        ->withQueryString();
 
-        return view('cotisations.index', compact('cotisations'));
-    }
+    return view('cotisations.index', compact('cotisations'));
+}
 
     public function create()
     {

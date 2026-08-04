@@ -9,9 +9,15 @@ use Illuminate\Http\Request;
 
 class MatchController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $matchs = MatchGame::orderByDesc('date_match')->paginate(15);
+    $matchs = MatchGame::query()
+        ->when($request->recherche, function ($query, $recherche) {
+            $query->where('adversaire', 'like', "%{$recherche}%");
+        })
+        ->orderByDesc('date_match')
+        ->paginate(15)
+        ->withQueryString();
 
     return view('matchs.index', compact('matchs'));
 }
