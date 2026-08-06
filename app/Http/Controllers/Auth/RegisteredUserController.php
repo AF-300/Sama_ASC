@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
         'name' => 'required|string|max:255',
         'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'role' => 'required|in:joueur,supporter',
+        'role' => 'required|in:joueur,cadet,supporter',
         'photo' => 'nullable|image|max:5120',
     ]);
 
@@ -46,19 +46,20 @@ class RegisteredUserController extends Controller
 
     $user->assignRole($request->role);
 
-    if ($request->role === 'joueur') {
-        $joueur = \App\Models\Joueur::make([
-            'user_id' => $user->id,
-            'nom' => $request->name,
-            'prenom' => '',
-        ]);
+    if ($request->role === 'joueur' || $request->role === 'cadet') {
+    $joueur = \App\Models\Joueur::make([
+        'user_id' => $user->id,
+        'nom' => $request->name,
+        'prenom' => '',
+        'categorie' => $request->role === 'cadet' ? 'cadet' : 'senior',
+    ]);
 
-        if ($request->hasFile('photo')) {
-            $joueur->photo = $this->compresserEtStockerPhoto($request->file('photo'));
-        }
-
-        $joueur->save();
+    if ($request->hasFile('photo')) {
+        $joueur->photo = $this->compresserEtStockerPhoto($request->file('photo'));
     }
+
+    $joueur->save();
+}
 
     event(new Registered($user));
 

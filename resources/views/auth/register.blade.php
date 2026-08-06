@@ -38,17 +38,18 @@
         <div>
             <x-input-label for="role" :value="__('Je suis un(e)')" />
             <select id="role" name="role" required
-                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-vert-teranga focus:ring-vert-teranga">
-                <option value="joueur" @selected(old('role') === 'joueur')>Joueur</option>
-                <option value="supporter" @selected(old('role') === 'supporter')>Supporter</option>
-            </select>
+        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-vert-teranga focus:ring-vert-teranga">
+    <option value="joueur" @selected(old('role') === 'joueur')>Joueur (Senior)</option>
+    <option value="cadet" @selected(old('role') === 'cadet')>Cadet</option>
+    <option value="supporter" @selected(old('role') === 'supporter')>Supporter</option>
+</select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <!-- Photo (uniquement pour les joueurs) -->
         <div x-data="{ role: document.getElementById('role').value }"
-             x-init="document.getElementById('role').addEventListener('change', e => role = e.target.value)"
-             x-show="role === 'joueur'">
+     x-init="document.getElementById('role').addEventListener('change', e => role = e.target.value)"
+     x-show="role === 'joueur' || role === 'cadet'">
             <x-input-label for="photo" :value="__('Ta photo (optionnel)')" />
             <input id="photo" type="file" name="photo" accept="image/*"
                    class="mt-1 block w-full text-sm text-gray-700">

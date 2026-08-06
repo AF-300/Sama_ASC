@@ -252,6 +252,10 @@
     <x-responsive-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
         {{ __('Joueurs') }}
     </x-responsive-nav-link>
+
+    <x-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
+    {{ __('Cadets') }}
+</x-nav-link>
 @endrole
             <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
     {{ __('Messages') }}
@@ -266,6 +270,10 @@
                 <x-responsive-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
                     {{ __('Joueurs') }}
                 </x-responsive-nav-link>
+
+                <x-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
+    {{ __('Cadets') }}
+</x-nav-link>
 
                 <x-responsive-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
                     {{ __('Matchs') }}

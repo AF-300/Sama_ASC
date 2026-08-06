@@ -13,6 +13,7 @@ use App\Http\Controllers\ContributeurController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\CadetController;
 
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
@@ -37,10 +38,11 @@ Route::middleware('auth')->group(function () {
         Route::get('matchs/{match}/statistiques', [StatistiqueController::class, 'edit'])->name('statistiques.edit');
         Route::post('matchs/{match}/statistiques', [StatistiqueController::class, 'update'])->name('statistiques.update');
         Route::resource('annonces', AnnonceController::class)->except(['index', 'show']);
+        Route::resource('cadets', CadetController::class)->parameters(['cadets' => 'cadet']);
     });
 
     // Accessible a tous les roles connectes (lecture seule)
-    Route::middleware('role:admin_asc|coach|joueur|supporter')->group(function () {
+    Route::middleware('role:admin_asc|coach|joueur|cadet|supporter')->group(function () {
         Route::resource('matchs', MatchController::class)->only(['index', 'show']);
         Route::resource('annonces', AnnonceController::class)->only(['index', 'show']);
         Route::get('classement', [StatistiqueController::class, 'classement'])->name('statistiques.classement');

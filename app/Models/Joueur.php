@@ -10,9 +10,9 @@ class Joueur extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'nom', 'prenom', 'age', 'poste',
-        'numero_maillot', 'photo', 'quartier',
-    ];
+    'user_id', 'nom', 'prenom', 'age', 'poste',
+    'numero_maillot', 'photo', 'quartier', 'categorie',
+];
 
     public function user()
     {
