@@ -10,17 +10,18 @@ use Illuminate\Http\Request;
 class MatchController extends Controller
 {
     public function index(Request $request)
-{
-    $matchs = MatchGame::query()
-        ->when($request->recherche, function ($query, $recherche) {
-            $query->where('adversaire', 'like', "%{$recherche}%");
-        })
-        ->orderByDesc('date_match')
-        ->paginate(15)
-        ->withQueryString();
+    {
+        $matchs = MatchGame::query()
+            ->where('categorie', 'senior')
+            ->when($request->recherche, function ($query, $recherche) {
+                $query->where('adversaire', 'like', "%{$recherche}%");
+            })
+            ->orderByDesc('date_match')
+            ->paginate(15)
+            ->withQueryString();
 
-    return view('matchs.index', compact('matchs'));
-}
+        return view('matchs.index', compact('matchs'));
+    }
 
     public function create()
     {
@@ -37,10 +38,12 @@ class MatchController extends Controller
             'statut' => 'required|in:a_venir,joue,annule',
         ]);
 
+        $validated['categorie'] = 'senior';
+
         MatchGame::create($validated);
 
         return redirect()->route('matchs.index')
-            ->with('success', 'Match créé avec succès.');
+            ->with('success', 'Match cree avec succes.');
     }
 
     public function show(MatchGame $match)
@@ -70,7 +73,7 @@ class MatchController extends Controller
         $match->update($validated);
 
         return redirect()->route('matchs.index')
-            ->with('success', 'Match mis a jour avec succès.');
+            ->with('success', 'Match mis a jour avec succes.');
     }
 
     public function destroy(MatchGame $match)
@@ -78,23 +81,17 @@ class MatchController extends Controller
         $match->delete();
 
         return redirect()->route('matchs.index')
-            ->with('success', 'Match supprimé avec succès.');
+            ->with('success', 'Match supprime avec succes.');
     }
 
-    /**
-     * Formulaire de composition d'equipe pour un match donne.
-     */
     public function composition(MatchGame $match)
     {
-        $joueurs = Joueur::orderBy('nom')->get();
+        $joueurs = Joueur::where('categorie', 'senior')->orderBy('nom')->get();
         $selectionnes = $match->compositions()->pluck('titulaire', 'joueur_id');
 
         return view('matchs.composition', compact('match', 'joueurs', 'selectionnes'));
     }
 
-    /**
-     * Enregistrement de la composition d'equipe.
-     */
     public function storeComposition(Request $request, MatchGame $match)
     {
         $validated = $request->validate([
@@ -107,7 +104,6 @@ class MatchController extends Controller
         $joueursSelectionnes = $validated['joueurs'] ?? [];
         $titulaires = $validated['titulaires'] ?? [];
 
-        // On repart de zero pour ce match
         Composition::where('match_id', $match->id)->delete();
 
         foreach ($joueursSelectionnes as $joueurId) {
@@ -122,29 +118,26 @@ class MatchController extends Controller
             ->with('success', 'Composition enregistree avec succes.');
     }
 
-    /**
- * Liste des matchs a venir avec le statut de convocation
- * du joueur actuellement connecte.
- */
-public function mesConvocations()
-{
-    $joueur = \App\Models\Joueur::where('user_id', auth()->id())->first();
+    public function mesConvocations()
+    {
+        $joueur = \App\Models\Joueur::where('user_id', auth()->id())->first();
 
-    if (! $joueur) {
-        return view('matchs.mes-convocations', ['convocations' => collect(), 'aFicheJoueur' => false]);
+        if (! $joueur) {
+            return view('matchs.mes-convocations', ['convocations' => collect(), 'aFicheJoueur' => false]);
+        }
+
+        $convocations = MatchGame::where('statut', 'a_venir')
+            ->where('categorie', $joueur->categorie)
+            ->orderBy('date_match')
+            ->get()
+            ->map(function ($match) use ($joueur) {
+                $composition = $match->compositions->firstWhere('joueur_id', $joueur->id);
+                $match->statutConvocation = $composition
+                    ? ($composition->titulaire ? 'titulaire' : 'remplacant')
+                    : 'non_convoque';
+                return $match;
+            });
+
+        return view('matchs.mes-convocations', ['convocations' => $convocations, 'aFicheJoueur' => true]);
     }
-
-    $convocations = MatchGame::where('statut', 'a_venir')
-        ->orderBy('date_match')
-        ->get()
-        ->map(function ($match) use ($joueur) {
-            $composition = $match->compositions->firstWhere('joueur_id', $joueur->id);
-            $match->statutConvocation = $composition
-                ? ($composition->titulaire ? 'titulaire' : 'remplacant')
-                : 'non_convoque';
-            return $match;
-        });
-
-    return view('matchs.mes-convocations', ['convocations' => $convocations, 'aFicheJoueur' => true]);
-}
 }

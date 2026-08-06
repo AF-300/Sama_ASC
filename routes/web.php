@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\CadetController;
+use App\Http\Controllers\CadetMatchController;
 
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
@@ -31,15 +32,25 @@ Route::middleware('auth')->group(function () {
     // IMPORTANT : ce groupe doit etre declare AVANT le groupe public,
     // pour que "matchs/create" et "annonces/create" ne soient pas intercepte par "{match}"/"{annonce}"
     Route::middleware('role:admin_asc|coach')->group(function () {
-        Route::resource('joueurs', JoueurController::class);
-        Route::resource('matchs', MatchController::class)->except(['index', 'show']);
-        Route::get('matchs/{match}/composition', [MatchController::class, 'composition'])->name('matchs.composition');
-        Route::post('matchs/{match}/composition', [MatchController::class, 'storeComposition'])->name('matchs.composition.store');
-        Route::get('matchs/{match}/statistiques', [StatistiqueController::class, 'edit'])->name('statistiques.edit');
-        Route::post('matchs/{match}/statistiques', [StatistiqueController::class, 'update'])->name('statistiques.update');
-        Route::resource('annonces', AnnonceController::class)->except(['index', 'show']);
-        Route::resource('cadets', CadetController::class)->parameters(['cadets' => 'cadet']);
-    });
+    Route::resource('joueurs', JoueurController::class);
+    Route::resource('cadets', CadetController::class)->parameters(['cadets' => 'cadet']);
+    Route::resource('matchs', MatchController::class)->except(['index', 'show']);
+    Route::get('matchs/{match}/composition', [MatchController::class, 'composition'])->name('matchs.composition');
+    Route::post('matchs/{match}/composition', [MatchController::class, 'storeComposition'])->name('matchs.composition.store');
+    Route::get('matchs/{match}/statistiques', [StatistiqueController::class, 'edit'])->name('statistiques.edit');
+    Route::post('matchs/{match}/statistiques', [StatistiqueController::class, 'update'])->name('statistiques.update');
+    Route::resource('annonces', AnnonceController::class)->except(['index', 'show']);
+
+    Route::resource('matchs-cadets', CadetMatchController::class)->parameters(['matchs-cadets' => 'matchesCadet']);
+    Route::get('matchs-cadets/{matchesCadet}/composition', [CadetMatchController::class, 'composition'])->name('matchs-cadets.composition');
+    Route::post('matchs-cadets/{matchesCadet}/composition', [CadetMatchController::class, 'storeComposition'])->name('matchs-cadets.composition.store');
+
+    Route::get('matchs-cadets/{matchesCadet}/statistiques', [StatistiqueController::class, 'edit'])->name('matchs-cadets.statistiques.edit');
+Route::post('matchs-cadets/{matchesCadet}/statistiques', [StatistiqueController::class, 'update'])->name('matchs-cadets.statistiques.update');
+
+Route::get('matchs-cadets/{matchesCadet}/statistiques', [StatistiqueController::class, 'edit'])->name('matchs-cadets.statistiques.edit');
+Route::post('matchs-cadets/{matchesCadet}/statistiques', [StatistiqueController::class, 'update'])->name('matchs-cadets.statistiques.update');
+});
 
     // Accessible a tous les roles connectes (lecture seule)
     Route::middleware('role:admin_asc|coach|joueur|cadet|supporter')->group(function () {

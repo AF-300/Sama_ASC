@@ -46,20 +46,29 @@ class StatistiqueController extends Controller
             );
         }
 
-        return redirect()->route('matchs.show', $match)
-            ->with('success', 'Statistiques enregistrées avec succès.');
+       $route = $match->categorie === 'cadet' ? 'matchs-cadets.show' : 'matchs.show';
+
+return redirect()->route($route, $match)
+    ->with('success', 'Statistiques enregistrees avec succes.');
     }
 
     /**
      * Classement des buteurs (visible par tous les roles connectes).
      */
-    public function classement()
+   public function classement()
 {
-    $prochainMatch = \App\Models\MatchGame::where('statut', 'a_venir')
+    $prochainMatchSenior = \App\Models\MatchGame::where('statut', 'a_venir')
+        ->where('categorie', 'senior')
         ->orderBy('date_match')
         ->with('compositions.joueur')
         ->first();
 
-    return view('statistiques.classement', compact('prochainMatch'));
+    $prochainMatchCadet = \App\Models\MatchGame::where('statut', 'a_venir')
+        ->where('categorie', 'cadet')
+        ->orderBy('date_match')
+        ->with('compositions.joueur')
+        ->first();
+
+    return view('statistiques.classement', compact('prochainMatchSenior', 'prochainMatchCadet'));
 }
 }

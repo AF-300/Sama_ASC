@@ -13,7 +13,11 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                @php
+                    $messagesNonLus = \App\Models\Message::where('destinataire_id', auth()->id())->where('lu', false)->count();
+                @endphp
+
+                <!-- Navigation Links (desktop) -->
                 <div class="hidden space-x-6 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,44 +40,50 @@
                         {{ __('Composition') }}
                     </x-nav-link>
 
-                    @role('joueur')
-    <x-nav-link :href="route('matchs.mes-convocations')" :active="request()->routeIs('matchs.mes-convocations')">
-        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        {{ __('Mes convocations') }}
-    </x-nav-link>
-@endrole
-<x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
-    <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    </svg>
-    {{ __('Messages') }}
-    @php
-        $messagesNonLus = \App\Models\Message::where('destinataire_id', auth()->id())->where('lu', false)->count();
-    @endphp
-    @if ($messagesNonLus > 0)
-        <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
-            {{ $messagesNonLus }}
-        </span>
-    @endif
-</x-nav-link>
+                    @role('joueur|cadet')
+                        <x-nav-link :href="route('matchs.mes-convocations')" :active="request()->routeIs('matchs.mes-convocations')">
+                            <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ __('Mes convocations') }}
+                        </x-nav-link>
+                    @endrole
+
+                    <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+                        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        {{ __('Messages') }}
+                        @if ($messagesNonLus > 0)
+                            <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+                                {{ $messagesNonLus }}
+                            </span>
+                        @endif
+                    </x-nav-link>
 
                     <x-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
-    <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-    {{ __('Matchs') }}
-</x-nav-link>
+                        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        {{ __('Matchs') }}
+                    </x-nav-link>
 
-@role('admin_asc|coach')
-    <x-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
-        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-3.13a4 4 0 10-4-4 4 4 0 004 4zm6 3a4 4 0 10-4-4" />
-        </svg>
-        {{ __('Joueurs') }}
-    </x-nav-link>
-@endrole
+                    @role('admin_asc|coach')
+                        <x-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
+                            <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-3.13a4 4 0 10-4-4 4 4 0 004 4zm6 3a4 4 0 10-4-4" />
+                            </svg>
+                            {{ __('Joueurs') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
+                            {{ __('Cadets') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('matchs-cadets.index')" :active="request()->routeIs('matchs-cadets.*')">
+                            {{ __('Matchs Cadets') }}
+                        </x-nav-link>
+                    @endrole
 
                     @role('admin_asc')
                         <x-nav-link :href="route('caisse.index')" :active="request()->routeIs('caisse.*', 'cotisations.*', 'depenses.*', 'contributeurs.*')">
@@ -81,11 +91,11 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             {{ __('Finances') }}
-                        
                         </x-nav-link>
+
                         <x-nav-link :href="route('utilisateurs.index')" :active="request()->routeIs('utilisateurs.*')">
-    {{ __('Utilisateurs') }}
-</x-nav-link>
+                            {{ __('Utilisateurs') }}
+                        </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -178,23 +188,22 @@
             </div>
 
             <!-- Hamburger -->
-            <!-- Hamburger -->
-<div class="-me-2 flex items-center sm:hidden">
-    @php
-        $totalNonLus = Auth::user()->unreadNotifications->count() + $messagesNonLus;
-    @endphp
-    <button @click="open = ! open" class="relative inline-flex items-center justify-center p-2 rounded-md text-blanc-sable/60 hover:text-blanc-sable hover:bg-white/5 focus:outline-none focus:bg-white/5 focus:text-blanc-sable transition duration-150 ease-in-out">
-        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-            <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-        @if ($totalNonLus > 0)
-            <span class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
-                {{ $totalNonLus }}
-            </span>
-        @endif
-    </button>
-</div>
+            <div class="-me-2 flex items-center sm:hidden">
+                @php
+                    $totalNonLus = Auth::user()->unreadNotifications->count() + $messagesNonLus;
+                @endphp
+                <button @click="open = ! open" class="relative inline-flex items-center justify-center p-2 rounded-md text-blanc-sable/60 hover:text-blanc-sable hover:bg-white/5 focus:outline-none focus:bg-white/5 focus:text-blanc-sable transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    @if ($totalNonLus > 0)
+                        <span class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+                            {{ $totalNonLus }}
+                        </span>
+                    @endif
+                </button>
+            </div>
         </div>
     </div>
 
@@ -219,9 +228,8 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <!-- Responsive Navigation Menu -->
-<div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-nuit-dakar max-h-[calc(100vh-5rem)] overflow-y-auto">
+    <!-- Responsive Navigation Menu (mobile) -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-nuit-dakar max-h-[calc(100vh-5rem)] overflow-y-auto">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
@@ -232,51 +240,39 @@
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('statistiques.classement')" :active="request()->routeIs('statistiques.classement')">
-               {{ __('Composition') }}
+                {{ __('Composition') }}
             </x-responsive-nav-link>
 
-             @role('joueur')
-    <x-nav-link :href="route('matchs.mes-convocations')" :active="request()->routeIs('matchs.mes-convocations')">
-        <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        {{ __('Mes convocations') }}
-    </x-nav-link>
-@endrole
+            @role('joueur|cadet')
+                <x-responsive-nav-link :href="route('matchs.mes-convocations')" :active="request()->routeIs('matchs.mes-convocations')">
+                    {{ __('Mes convocations') }}
+                </x-responsive-nav-link>
+            @endrole
+
+            <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+                {{ __('Messages') }}
+                @if ($messagesNonLus > 0)
+                    <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
+                        {{ $messagesNonLus }}
+                    </span>
+                @endif
+            </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
-    {{ __('Matchs') }}
-</x-responsive-nav-link>
-
-@role('admin_asc|coach')
-    <x-responsive-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
-        {{ __('Joueurs') }}
-    </x-responsive-nav-link>
-
-    <x-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
-    {{ __('Cadets') }}
-</x-nav-link>
-@endrole
-            <x-responsive-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
-    {{ __('Messages') }}
-    @if ($messagesNonLus > 0)
-        <span class="ms-1.5 inline-flex items-center justify-center w-4 h-4 text-xs font-mono font-bold text-white bg-rouge-laterite rounded-full">
-            {{ $messagesNonLus }}
-        </span>
-    @endif
-</x-responsive-nav-link>
+                {{ __('Matchs') }}
+            </x-responsive-nav-link>
 
             @role('admin_asc|coach')
                 <x-responsive-nav-link :href="route('joueurs.index')" :active="request()->routeIs('joueurs.*')">
                     {{ __('Joueurs') }}
                 </x-responsive-nav-link>
 
-                <x-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
-    {{ __('Cadets') }}
-</x-nav-link>
+                <x-responsive-nav-link :href="route('cadets.index')" :active="request()->routeIs('cadets.*')">
+                    {{ __('Cadets') }}
+                </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('matchs.index')" :active="request()->routeIs('matchs.*')">
-                    {{ __('Matchs') }}
+                <x-responsive-nav-link :href="route('matchs-cadets.index')" :active="request()->routeIs('matchs-cadets.*')">
+                    {{ __('Matchs Cadets') }}
                 </x-responsive-nav-link>
             @endrole
 
@@ -284,9 +280,10 @@
                 <x-responsive-nav-link :href="route('caisse.index')" :active="request()->routeIs('caisse.*', 'cotisations.*', 'depenses.*', 'contributeurs.*')">
                     {{ __('Finances') }}
                 </x-responsive-nav-link>
-                <x-nav-link :href="route('utilisateurs.index')" :active="request()->routeIs('utilisateurs.*')">
-    {{ __('Utilisateurs') }}
-</x-nav-link>
+
+                <x-responsive-nav-link :href="route('utilisateurs.index')" :active="request()->routeIs('utilisateurs.*')">
+                    {{ __('Utilisateurs') }}
+                </x-responsive-nav-link>
             @endrole
         </div>
 

@@ -3,77 +3,29 @@
         <h2 class="font-display font-semibold text-xl text-nuit-dakar leading-tight">Composition de depart</h2>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-8" x-data="{ onglet: 'senior' }">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
-            @if (! $prochainMatch)
-                <div class="bg-white shadow-sm rounded-xl p-6 text-center text-gray-500">
-                    Aucun match a venir pour le moment.
-                </div>
-            @else
-                <div class="bg-white shadow-sm rounded-xl overflow-hidden mb-6">
-                    <div class="bg-nuit-dakar px-6 py-5 text-center">
-                        <p class="text-blanc-sable/60 text-xs uppercase tracking-wide mb-1">Prochain match</p>
-                        <h3 class="font-display font-bold text-xl text-blanc-sable">vs {{ $prochainMatch->adversaire }}</h3>
-                        <p class="text-blanc-sable/70 text-sm font-mono tabular-nums mt-1">
-                            {{ $prochainMatch->date_match->format('d/m/Y') }}
-                            @if($prochainMatch->heure) a {{ $prochainMatch->heure }} @endif
-                            @if($prochainMatch->lieu) — {{ $prochainMatch->lieu }} @endif
-                        </p>
-                    </div>
-                </div>
+            <div class="flex gap-2 mb-6">
+                <button @click="onglet = 'senior'"
+                        :class="onglet === 'senior' ? 'bg-vert-teranga text-white' : 'bg-white text-gray-600'"
+                        class="px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                    Seniors
+                </button>
+                <button @click="onglet = 'cadet'"
+                        :class="onglet === 'cadet' ? 'bg-vert-teranga text-white' : 'bg-white text-gray-600'"
+                        class="px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                    Cadets
+                </button>
+            </div>
 
-                @if ($prochainMatch->compositions->isEmpty())
-                    <div class="bg-white shadow-sm rounded-xl p-6 text-center text-gray-500">
-                        La composition n'a pas encore ete definie pour ce match.
-                    </div>
-                @else
-                    <div class="bg-white shadow-sm rounded-xl p-6">
-                        <h4 class="font-display font-semibold text-nuit-dakar mb-4">Titulaires</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                            @foreach ($prochainMatch->compositions->where('titulaire', true) as $comp)
-                                <div class="flex items-center gap-3 p-3 bg-vert-teranga/5 rounded-lg">
-                                    @if ($comp->joueur->photo)
-                                        <img src="{{ $comp->joueur->photo }}" class="w-10 h-10 rounded-full object-cover">
-                                    @else
-                                        <div class="w-10 h-10 rounded-full bg-or-sable flex items-center justify-center text-white font-display font-bold text-sm">
-                                            {{ strtoupper(substr($comp->joueur->prenom, 0, 1)) }}
-                                        </div>
-                                    @endif
-                                    <div>
-                                        <p class="font-medium text-gray-900 text-sm">{{ $comp->joueur->prenom }} {{ $comp->joueur->nom }}</p>
-                                        <p class="text-xs text-gray-500">
-                                            @if($comp->joueur->numero_maillot) #{{ $comp->joueur->numero_maillot }} @endif
-                                            {{ ucfirst($comp->joueur->poste ?? '') }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
+            <div x-show="onglet === 'senior'">
+                @include('statistiques._composition-match', ['match' => $prochainMatchSenior])
+            </div>
 
-                        @if ($prochainMatch->compositions->where('titulaire', false)->isNotEmpty())
-                            <h4 class="font-display font-semibold text-nuit-dakar mb-4">Remplacants</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach ($prochainMatch->compositions->where('titulaire', false) as $comp)
-                                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                        @if ($comp->joueur->photo)
-                                            <img src="{{ $comp->joueur->photo }}" class="w-10 h-10 rounded-full object-cover">
-                                        @else
-                                            <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-display font-bold text-sm">
-                                                {{ strtoupper(substr($comp->joueur->prenom, 0, 1)) }}
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <p class="font-medium text-gray-900 text-sm">{{ $comp->joueur->prenom }} {{ $comp->joueur->nom }}</p>
-                                            <p class="text-xs text-gray-500">{{ ucfirst($comp->joueur->poste ?? '') }}</p>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endif
-            @endif
+            <div x-show="onglet === 'cadet'" x-cloak>
+                @include('statistiques._composition-match', ['match' => $prochainMatchCadet])
+            </div>
         </div>
     </div>
 </x-app-layout>

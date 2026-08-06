@@ -13,9 +13,9 @@ class MatchGame extends Model
     protected $table = 'matchs';
 
     protected $fillable = [
-        'adversaire', 'date_match', 'heure', 'lieu',
-        'score_asc', 'score_adversaire', 'statut',
-    ];
+    'adversaire', 'date_match', 'heure', 'lieu',
+    'score_asc', 'score_adversaire', 'statut', 'categorie',
+];
 
     protected $casts = [
         'date_match' => 'date',
