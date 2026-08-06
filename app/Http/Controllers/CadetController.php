@@ -54,6 +54,13 @@ class CadetController extends Controller
             ->with('success', 'Cadet ajoute avec succes.');
     }
 
+    public function show(Joueur $cadet)
+{
+    $cadet->load(['statistiques.match', 'presences']);
+
+    return view('cadets.show', ['joueur' => $cadet]);
+}
+
     public function edit(Joueur $cadet)
     {
         return view('cadets.edit', ['joueur' => $cadet]);
