@@ -12,10 +12,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+       $user = auth()->user();
+
+$monJoueur = null;
+if ($user->hasAnyRole(['joueur', 'cadet'])) {
+    $monJoueur = \App\Models\Joueur::where('user_id', $user->id)->first();
+}
 
         $data = [
             'nombreJoueurs' => Joueur::count(),
+            'monJoueur' => $monJoueur,
             'prochainsMatchs' => MatchGame::where('statut', 'a_venir')
                 ->orderBy('date_match')
                 ->limit(3)

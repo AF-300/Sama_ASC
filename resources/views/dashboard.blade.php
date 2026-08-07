@@ -5,7 +5,33 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
+@if ($monJoueur)
+    <div class="flex items-center gap-4 bg-white shadow-sm rounded-xl p-6">
+        <div class="relative shrink-0">
+            <div class="p-1 rounded-full bg-gradient-to-tr from-vert-teranga via-or-sable to-rouge-laterite">
+                <div class="bg-white p-0.5 rounded-full">
+                    @if ($monJoueur->photo)
+                        <img src="{{ $monJoueur->photo }}" class="w-20 h-20 rounded-full object-cover">
+                    @else
+                        <div class="w-20 h-20 rounded-full bg-or-sable flex items-center justify-center text-white font-display font-bold text-2xl">
+                            {{ strtoupper(substr($monJoueur->prenom ?: $monJoueur->nom, 0, 1)) }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div>
+            <p class="font-display font-semibold text-lg text-nuit-dakar">
+                {{ $monJoueur->prenom ?: $monJoueur->nom }} {{ $monJoueur->prenom ? $monJoueur->nom : '' }}
+            </p>
+            <p class="text-sm text-gray-500 capitalize">
+                {{ $monJoueur->categorie === 'cadet' ? 'Cadet' : 'Senior' }}
+                @if ($monJoueur->poste) — {{ ucfirst($monJoueur->poste) }} @endif
+                @if ($monJoueur->numero_maillot) <span class="font-mono">#{{ $monJoueur->numero_maillot }}</span> @endif
+            </p>
+        </div>
+    </div>
+@endif
         @if ($dernieresAnnonces->isNotEmpty())
     <div class="bg-nuit-dakar rounded-xl overflow-hidden flex items-center">
         <span class="bg-or-sable text-nuit-dakar font-display font-bold text-xs px-4 py-3 shrink-0 uppercase tracking-wide">
