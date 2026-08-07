@@ -70,7 +70,7 @@ class RegisteredUserController extends Controller
 
 private function compresserEtStockerPhoto($fichier): string
 {
-    $manager = new ImageManager(new Driver());
+   $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
     $image = $manager->read($fichier);
     $image->scaleDown(width: 500);
 
