@@ -84,6 +84,40 @@ Route::post('matchs-cadets/{matchesCadet}/statistiques', [StatistiqueController:
         Route::get('caisse/rapport-pdf', [CaisseController::class, 'exporterPdf'])->name('caisse.rapport-pdf');
         Route::get('utilisateurs', [UtilisateurController::class, 'index'])->name('utilisateurs.index');
 Route::delete('utilisateurs/{user}', [UtilisateurController::class, 'destroy'])->name('utilisateurs.destroy');
+
+Route::get('reparer-cadets-orphelins', function () {
+    $repares = 0;
+
+    $utilisateursCadets = \App\Models\User::role('cadet')->get();
+
+    foreach ($utilisateursCadets as $user) {
+        if (! \App\Models\Joueur::where('user_id', $user->id)->exists()) {
+            \App\Models\Joueur::create([
+                'user_id' => $user->id,
+                'nom' => $user->name,
+                'prenom' => '',
+                'categorie' => 'cadet',
+            ]);
+            $repares++;
+        }
+    }
+
+    $utilisateursJoueurs = \App\Models\User::role('joueur')->get();
+
+    foreach ($utilisateursJoueurs as $user) {
+        if (! \App\Models\Joueur::where('user_id', $user->id)->exists()) {
+            \App\Models\Joueur::create([
+                'user_id' => $user->id,
+                'nom' => $user->name,
+                'prenom' => '',
+                'categorie' => 'senior',
+            ]);
+            $repares++;
+        }
+    }
+
+    return "Reparation terminee : {$repares} fiche(s) joueur creee(s).";
+});
     });
 });
 
