@@ -57,17 +57,26 @@ return redirect()->route($route, $match)
      */
    public function classement()
 {
-    $prochainMatchSenior = \App\Models\MatchGame::where('statut', 'a_venir')
-        ->where('categorie', 'senior')
-        ->orderBy('date_match')
-        ->with('compositions.joueur')
-        ->first();
+    $user = auth()->user();
 
-    $prochainMatchCadet = \App\Models\MatchGame::where('statut', 'a_venir')
-        ->where('categorie', 'cadet')
-        ->orderBy('date_match')
-        ->with('compositions.joueur')
-        ->first();
+    $prochainMatchSenior = null;
+    $prochainMatchCadet = null;
+
+    if ($user->hasAnyRole(['admin_asc', 'coach', 'joueur', 'supporter'])) {
+        $prochainMatchSenior = \App\Models\MatchGame::where('statut', 'a_venir')
+            ->where('categorie', 'senior')
+            ->orderBy('date_match')
+            ->with('compositions.joueur')
+            ->first();
+    }
+
+    if ($user->hasAnyRole(['admin_asc', 'coach', 'cadet', 'supporter'])) {
+        $prochainMatchCadet = \App\Models\MatchGame::where('statut', 'a_venir')
+            ->where('categorie', 'cadet')
+            ->orderBy('date_match')
+            ->with('compositions.joueur')
+            ->first();
+    }
 
     return view('statistiques.classement', compact('prochainMatchSenior', 'prochainMatchCadet'));
 }
